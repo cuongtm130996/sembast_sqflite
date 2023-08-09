@@ -76,6 +76,9 @@ class JdbDatabaseSqflite implements jdb.JdbDatabase {
             where: lastId > 0 ? '$sqlIdKey > $lastId' : null);
         for (var map in maps) {
           if (hasAsyncCodec) {
+            if (map[sqlIdKey] == null || map[sqlStoreKey] == null || map[sqlValueKey] == null || map[sqlKeyKey] == null) {
+              continue;
+            }
             var entry = _encodedEntryFromCursor(map);
             asyncCodecFutures.add(_asyncCodeLock.synchronized(() async {
               var decoded = await decodeReadEntryAsync(entry);
@@ -85,6 +88,9 @@ class JdbDatabaseSqflite implements jdb.JdbDatabase {
               ctlr.add(decoded);
             }));
           } else {
+            if (map[sqlIdKey] == null || map[sqlStoreKey] == null || map[sqlValueKey] == null || map[sqlKeyKey] == null) {
+              continue;
+            }
             var entry = _entryFromCursorSync(map);
             if (_debug) {
               print('$_debugPrefix reading entry $entry');
